@@ -1,0 +1,9 @@
+INICIANDO NO PHP
+
+1º iniciar o laragon ( instalar se for necessario)
+
+2º entrar nos arquivos c: - laragon - www
+
+3º abrir no chrome localhost/pasta que deseja utilizar ( ex: http://localhost/calendario.php)
+
+4º Para começar no php codigo, inicia sempre com ( <?php ) e fecha com ( ?> )
