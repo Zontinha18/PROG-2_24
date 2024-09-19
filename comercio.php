@@ -8,16 +8,18 @@ $setores = [
     'brinquedo' => 'Setor 5 (Brinquedo)'
 ];
 
-// Inicializa variáveis para armazenar o produto e setor
+// Inicializa variáveis para armazenar o produto, setor e quantidade
 $produto = '';
 $composicao = ''; // Inicializa a variável
 $setor = '';
+$quantidade = ''; // Altera aqui para inicializar como string
 
 // Verifica se os dados foram enviados
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $produto = htmlspecialchars($_POST['produto']);
     $composicao = htmlspecialchars($_POST['composicao']);
-    
+    $quantidade = isset($_POST['quantidade']) ? htmlspecialchars($_POST['quantidade']) : ''; // Verifica se a quantidade foi enviada
+
     // Encontra o setor baseado na composição
     $setor = isset($setores[$composicao]) ? $setores[$composicao] : 'Setor não encontrado';
 }
@@ -57,6 +59,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
         .content {
             font-size: 20px;
+            text-align: start;
         }
         form {
             margin-bottom: 20px;
@@ -66,13 +69,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             display: block;
             margin-bottom: 10px;
         }
-        input[type="text"], select {
+        input[type="text"], select, input[type="number"] {
             padding: 10px;
             font-size: 16px;
             width: 100%;
             max-width: 400px;
             margin-bottom: 20px;
-            border-radius:10px;
+            border-radius: 10px;
         }
         input[type="submit"] {
             padding: 10px 20px;
@@ -106,6 +109,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <option value="brinquedo" <?php echo $composicao === 'brinquedo' ? 'selected' : ''; ?>>Brinquedo</option>
             </select>
 
+            <label for="quantidade">Quantidade:</label>
+            <input type="number" id="quantidade" name="quantidade" value="<?php echo htmlspecialchars($quantidade); ?>" required min="1">
+
             <input type="submit" value="Enviar">
         </form>
 
@@ -114,6 +120,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <h1>Detalhes do Produto</h1>
                 <p><strong>Nome do Produto:</strong> <?php echo htmlspecialchars($produto); ?></p>
                 <p><strong>Setor Recomendado:</strong> <?php echo htmlspecialchars($setor); ?></p>
+                <p><strong>Quantidade:</strong> <?php echo htmlspecialchars($quantidade); ?></p>
             </div>
         <?php else: ?>
             <div class="content">Nenhum dado foi enviado.</div>
