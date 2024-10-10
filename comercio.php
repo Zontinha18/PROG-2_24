@@ -1,27 +1,19 @@
 <?php
-// Mapeamento dos setores
-$setores = [
-    'eletronico' => 'Setor 1 (Eletrônico)',
-    'plastico' => 'Setor 2 (Plástico)',
-    'aluminio' => 'Setor 3 (Alumínio)',
-    'roupas' => 'Setor 4 (Roupas)',
-    'brinquedo' => 'Setor 5 (Brinquedo)'
-];
+session_start();
 
-// Inicializa variáveis para armazenar o produto, setor e quantidade
-$produto = '';
-$composicao = ''; // Inicializa a variável
-$setor = '';
-$quantidade = ''; // Altera aqui para inicializar como string
+// Verifica se a sessão de produtos já existe, se não, inicializa
+if (!isset($_SESSION['produtos'])) {
+    $_SESSION['produtos'] = [];
+}
 
-// Verifica se os dados foram enviados
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $produto = htmlspecialchars($_POST['produto']);
-    $composicao = htmlspecialchars($_POST['composicao']);
-    $quantidade = isset($_POST['quantidade']) ? htmlspecialchars($_POST['quantidade']) : ''; // Verifica se a quantidade foi enviada
-
-    // Encontra o setor baseado na composição
-    $setor = isset($setores[$composicao]) ? $setores[$composicao] : 'Setor não encontrado';
+// Adiciona o produto à sessão quando o formulário é enviado
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $descricao = htmlspecialchars($_POST['descricao']);
+    $setor = htmlspecialchars($_POST['setor']);
+    
+    $_SESSION['produtos'][] = ['descricao' => $descricao, 'setor' => $setor];
+    header('Location: index.php');
+    exit();
 }
 ?>
 
@@ -34,97 +26,135 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <style>
         body {
             font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
+            background-color: #f9f9f9;
             margin: 0;
-            background-color: #f4f4f4;
-        }
-        .container {
-            text-align: center;
-            border: 1px solid #ccc;
-            padding: 20px;
-            background-color: #fff;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            max-width: 600px;
-            margin: auto;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
         }
         h1 {
-            margin-bottom: 25px;
-        }
-        .header {
-            font-size: 25px;
-            margin-bottom: 25px;
-        }
-        .content {
-            font-size: 20px;
-            text-align: start;
+            color: #333;
+            text-transform: uppercase; /* NOME EM MAIÚSCULAS */
         }
         form {
-            margin-bottom: 20px;
-            padding: 25px;
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            width: 600px; /* LARGURA AUMENTADA */
+            margin-bottom: 40px;
         }
         label {
             display: block;
-            margin-bottom: 10px;
+            margin-bottom: 5px;
+            font-weight: bold;
         }
-        input[type="text"], select, input[type="number"] {
-            padding: 10px;
-            font-size: 16px;
+        input[type="text"], select {
             width: 100%;
-            max-width: 400px;
-            margin-bottom: 20px;
-            border-radius: 10px;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
         }
         input[type="submit"] {
-            padding: 10px 20px;
-            font-size: 16px;
-            background-color: #007bff;
-            color: #fff;
+            background-color: #28a745;
+            color: white;
             border: none;
+            border-radius: 4px;
+            padding: 10px;
             cursor: pointer;
+            width: 100%;
         }
         input[type="submit"]:hover {
-            background-color: #0056b3;
+            background-color: #218838;
+        }
+        h2, h3 {
+            margin-top: 20px;
+            color: #333;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        .setor {
+            background: #e9ecef;
+            border-radius: 8px;
+            padding: 10px;
+            margin: 10px 0;
+            width: 400px; /* Mesma largura do formulário */
+            box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+        }
+        li {
+            background: #fff;
+            margin: 5px 0;
+            padding: 10px;
+            border-radius: 4px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .numero {
+            font-weight: bold;
+            color: #28a745;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">LOJA DO ZONTINHA</div>
+    <h1>LOJA DO ZONTINHA</h1>
 
-        <!-- Formulário para entrada de dados -->
-        <h1>Cadastro de Produtos</h1>
-        <form action="" method="post">
-            <label for="produto">Nome do Produto:</label>
-            <input type="text" id="produto" name="produto" value="<?php echo htmlspecialchars($produto); ?>" required>
+    <h2>Adicionar Produto</h2>
+    <form method="post" action="">
+        <label for="descricao">Descrição do Produto:</label>
+        <input type="text" id="descricao" name="descricao" required placeholder="Digite a descrição do produto">
 
-            <label for="composicao">Composição do Produto:</label>
-            <select id="composicao" name="composicao" required>
-                <option value="eletronico" <?php echo $composicao === 'eletronico' ? 'selected' : ''; ?>>Eletrônico</option>
-                <option value="plastico" <?php echo $composicao === 'plastico' ? 'selected' : ''; ?>>Plástico</option>
-                <option value="aluminio" <?php echo $composicao === 'aluminio' ? 'selected' : ''; ?>>Alumínio</option>
-                <option value="roupas" <?php echo $composicao === 'roupas' ? 'selected' : ''; ?>>Roupas</option>
-                <option value="brinquedo" <?php echo $composicao === 'brinquedo' ? 'selected' : ''; ?>>Brinquedo</option>
-            </select>
+        <label for="setor">Setor:</label>
+        <select id="setor" name="setor" required>
+            <option value="eletronico">Eletrônico</option>
+            <option value="aluminio">Alumínio / Inox</option>
+            <option value="plastico">Plástico</option>
+            <option value="brinquedo">Brinquedo</option>
+            <option value="tecido">Tecido</option>
+            <option value="roupas">Roupas</option> <!-- Setor adicionado -->
+        </select>
 
-            <label for="quantidade">Quantidade:</label>
-            <input type="number" id="quantidade" name="quantidade" value="<?php echo htmlspecialchars($quantidade); ?>" required min="1">
+        <input type="submit" value="Adicionar Produto">
+    </form>
 
-            <input type="submit" value="Enviar">
-        </form>
-
-        <?php if ($_SERVER["REQUEST_METHOD"] == "POST"): ?>
-            <div class="content">
-                <h1>Detalhes do Produto</h1>
-                <p><strong>Nome do Produto:</strong> <?php echo htmlspecialchars($produto); ?></p>
-                <p><strong>Setor Recomendado:</strong> <?php echo htmlspecialchars($setor); ?></p>
-                <p><strong>Quantidade:</strong> <?php echo htmlspecialchars($quantidade); ?></p>
-            </div>
-        <?php else: ?>
-            <div class="content">Nenhum dado foi enviado.</div>
-        <?php endif; ?>
+    <h2>Produtos Cadastrados</h2>
+    <div class="setor">
+        <ul>
+            <?php foreach ($_SESSION['produtos'] as $index => $produto): ?>
+                <li>
+                    <span class="numero"><?php echo $index + 1; ?>.</span> <?php echo "{$produto['descricao']} - Setor: " . ucfirst($produto['setor']); ?>
+                </li>
+            <?php endforeach; ?>
+        </ul>
     </div>
+
+    <h2>Produtos por Setor</h2>
+    <?php 
+    $produtosPorSetor = [];
+    foreach ($_SESSION['produtos'] as $produto) {
+        $produtosPorSetor[$produto['setor']][] = $produto['descricao'];
+    }
+    ?>
+    <?php if (empty($produtosPorSetor)): ?>
+        <p>Nenhum produto cadastrado.</p>
+    <?php else: ?>
+        <?php foreach ($produtosPorSetor as $setor => $produtos): ?>
+            <div class="setor">
+                <h3><?php echo ucfirst($setor); ?></h3>
+                <ul>
+                    <?php foreach ($produtos as $index => $descricao): ?>
+                        <li>
+                            <span class="numero"><?php echo $index + 1; ?>.</span> <?php echo htmlspecialchars($descricao); ?>
+                        </li>
+                    <?php endforeach; ?>
+                </ul>
+            </div>
+        <?php endforeach; ?>
+    <?php endif; ?>
 </body>
 </html>
