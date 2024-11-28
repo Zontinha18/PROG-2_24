@@ -1,6 +1,6 @@
 <?php
-require_once '../app/models/Produto.php';
-require_once '../app/models/Comercio.php';
+require_once '../Models/Produto.php';
+require_once '../Models/Comercio.php';
 
 class ProdutoController {
     public function exibirView() {
@@ -15,12 +15,12 @@ class ProdutoController {
             "Esportes e Lazer", "Cosméticos e Perfumes", "Saúde e Bem-estar",
             "Material de Escritório", "Jardinagem e Agricultura", "Pets", "Automotivo"
         ];
-
+        
         // Cargos disponíveis (ajuste feito aqui)
         $cargos = ["Gerência", "Estoque", "Reposição"];
 
         // Incluindo a view principal
-        include '../app/views/main_view.php';
+        include '../Views/main_view.php'; // Inclui a view principal
     }
 
     private function processarAcoes($comercio) {
